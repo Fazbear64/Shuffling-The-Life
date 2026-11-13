@@ -1,0 +1,1 @@
+Aquí van todas las operaciones que manejan la lógica del juego
