@@ -8,9 +8,11 @@ import java.awt.image.BufferStrategy;
 public class Game extends Canvas implements Runnable {
     private Thread thread;
     private boolean running = false;
+    private Handler handler;
 
     public Game(){
         new Window(this);
+        handler = new Handler();
     }
 
     public synchronized void start(){
@@ -40,13 +42,15 @@ public class Game extends Canvas implements Runnable {
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
+
             while (delta >= 1){
                 tick();
                 delta--;
             }
-            if (running) {
+
+            if (running)
                 render();
-            }
+
             frames++;
 
             if (System.currentTimeMillis() - timer > 1000){
@@ -59,6 +63,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     private void tick(){
+        handler.tick();
     }
 
     private  void render(){
@@ -71,6 +76,7 @@ public class Game extends Canvas implements Runnable {
         Graphics g = bs.getDrawGraphics();
         g.setColor(Color.BLACK);
         g.fillRect(0,0,DefaultSettings.screenWidth,DefaultSettings.screenHeight);
+        handler.render(g);
         g.dispose();
         bs.show();
     }
