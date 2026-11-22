@@ -1,0 +1,8 @@
+entity\Arma$1.class
+entity\Damageable.class
+entity\GameObject.class
+dto\ArmaDTO.class
+dto\CartaTarotDTO.class
+entity\TipoArma.class
+entity\Arma.class
+dto\PersonajeDTO.class
