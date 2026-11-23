@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f7f0374f-8e44-43a9-b24e-cc81bf0a1e43" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/compile.bat" beforeDir="false" afterPath="$PROJECT_DIR$/compile.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/progreso.dat" beforeDir="false" afterPath="$PROJECT_DIR$/progreso.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/entity/CartaTarot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/CartaTarot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/entity/Enemigo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/Enemigo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/entity/GameObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/GameObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/entity/ID.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/ID.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/entity/Moneda.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/Moneda.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/entity/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/logic/Chronometer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/logic/Progreso.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/Progreso.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/visual/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/visual/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/visual/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/visual/Handler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/visual/Window.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/visual/Window.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto/ArmaDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto/ArmaDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto/CartaTarotDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto/CartaTarotDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto/EnemigoDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto/EnemigoDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto/PartidaDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto/PartidaDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto/PersonajeDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto/PersonajeDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto/PlayerDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto/PlayerDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Arma$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Arma$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Arma.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Arma.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Botiquin.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Botiquin.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/CartaTarot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/CartaTarot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Collidable.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Collidable.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Damageable.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Damageable.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Enemigo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Enemigo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/GameObject.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/GameObject.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/ID.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/ID.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Jefe$Segmento.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Jefe$Segmento.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Jefe.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Jefe.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Moneda.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Moneda.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Personaje.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Personaje.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Player$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Player$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Player.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Player.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/Proyectil.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Proyectil.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/entity/TipoArma.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/TipoArma.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/logic/Chronometer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/logic/Progreso.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/logic/Progreso.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lombok/AccessLevel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lombok/Getter$AnyAnnotation.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lombok/Getter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lombok/Setter$AnyAnnotation.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/lombok/Setter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/visual/Camera.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Camera.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/visual/Game$EstadoJuego.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Game$EstadoJuego.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/visual/Game.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Game.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/visual/Handler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Handler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/visual/RankingRenderer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/RankingRenderer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/visual/Window$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Window$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/visual/Window$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Window$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/visual/Window$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Window$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/visual/Window$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Window$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/visual/Window.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Window.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExportToHTMLSettings">
+    <option name="printScope" value="1" />
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/exportToHTML" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;papachorreada56-byte&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Fazbear64/Shuffling-The-Life.git&quot;,
+    &quot;accountId&quot;: &quot;7c47a412-bb3b-4d4b-90f5-e9ef55ab31ae&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3MGFB4h9sHeGrYHtUxAMb0BvjN3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Aplicación.Game (1).executor": "Coverage",
+    "Aplicación.Game.executor": "Run",
+    "JUnit.CartaTarotTest.executor": "Run",
+    "JUnit.EnemigoTest.executor": "Run",
+    "JUnit.PersonajeTest.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "develop",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.selected.package.jshint": "",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Módulos",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors"
+  }
+}]]></component>
+  <component name="RunManager" selected="Aplicación.Game">
+    <configuration name="Game (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="UNNAMED_CLASS_CONFIGURATION" value="true" />
+      <option name="MAIN_CLASS_NAME" value="Game" />
+      <module name="Shuffling-The-Life" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Game" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="visual.Game" />
+      <module name="Shuffling-The-Life" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="visual.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CartaTarotTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Shuffling-The-Life" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="entity.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="entity" />
+      <option name="MAIN_CLASS_NAME" value="entity.CartaTarotTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EnemigoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Shuffling-The-Life" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="entity.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="entity" />
+      <option name="MAIN_CLASS_NAME" value="entity.EnemigoTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PersonajeTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Shuffling-The-Life" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="entity.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="entity" />
+      <option name="MAIN_CLASS_NAME" value="entity.PersonajeTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Aplicación.Game" />
+        <item itemvalue="Aplicación.Game (1)" />
+        <item itemvalue="JUnit.PersonajeTest" />
+        <item itemvalue="JUnit.EnemigoTest" />
+        <item itemvalue="JUnit.CartaTarotTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-a203e0a19954-intellij.indexing.shared.core-IU-262.10315.125" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.10315.125" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f7f0374f-8e44-43a9-b24e-cc81bf0a1e43" name="Changes" comment="" />
+      <created>1794968859522</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1794968859522</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Shuffling_The_Life$Game.ic" NAME="Resultados de cobertura de Game" MODIFIED="1795332574885" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>visual.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/Shuffling_The_Life$Game__1_.ic" NAME="Resultados de cobertura de Game (1)" MODIFIED="1795405834320" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+  </component>
+</project>
