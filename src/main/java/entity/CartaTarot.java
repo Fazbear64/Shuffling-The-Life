@@ -20,6 +20,8 @@ public class CartaTarot {
     private float valor; // magnitud del efecto (puede ser porcentaje o valor absoluto)
     private String tipoEfecto; // descripción textual del efecto
     private boolean esComodin; // true si es comodín, false si es tarot
+    private String codigoImagen; // ej: "1h", "13s"
+    private String descripcionEfecto; // ej: "+30% Vida Max"
 
     // 26 comodines de poker (As a Rey de Corazones y Espadas)
     private static final String[] COMODIN_NOMBRES = {
@@ -62,15 +64,21 @@ public class CartaTarot {
 
     // Constructor
     public CartaTarot(String nombre, String efecto, float valor, String tipoEfecto) {
-        this(nombre, efecto, valor, tipoEfecto, false);
+        this(nombre, efecto, valor, tipoEfecto, false, null, null);
     }
 
     public CartaTarot(String nombre, String efecto, float valor, String tipoEfecto, boolean esComodin) {
+        this(nombre, efecto, valor, tipoEfecto, esComodin, null, null);
+    }
+
+    public CartaTarot(String nombre, String efecto, float valor, String tipoEfecto, boolean esComodin, String codigoImagen, String descripcionEfecto) {
         this.nombre = nombre;
         this.efecto = efecto;
         this.valor = valor;
         this.tipoEfecto = tipoEfecto;
         this.esComodin = esComodin;
+        this.codigoImagen = codigoImagen;
+        this.descripcionEfecto = descripcionEfecto;
     }
 
     // Getters
@@ -92,6 +100,39 @@ public class CartaTarot {
 
     public boolean isComodin() {
         return esComodin;
+    }
+
+    public String getCodigoImagen() {
+        if (codigoImagen != null && !codigoImagen.isEmpty()) {
+            return codigoImagen;
+        }
+        // Deducir código del nombre si es posible
+        for (int i = 0; i < COMODIN_NOMBRES.length; i++) {
+            if (COMODIN_NOMBRES[i].equalsIgnoreCase(nombre)) {
+                return (i < 13) ? ((i + 1) + "h") : ((i - 13 + 1) + "s");
+            }
+        }
+        return null;
+    }
+
+    public void setCodigoImagen(String codigoImagen) {
+        this.codigoImagen = codigoImagen;
+    }
+
+    public String getDescripcionEfecto() {
+        if (descripcionEfecto != null && !descripcionEfecto.isEmpty()) {
+            return descripcionEfecto;
+        }
+        for (int i = 0; i < COMODIN_NOMBRES.length; i++) {
+            if (COMODIN_NOMBRES[i].equalsIgnoreCase(nombre)) {
+                return COMODIN_EFECTOS[i];
+            }
+        }
+        return efecto != null ? efecto : "";
+    }
+
+    public void setDescripcionEfecto(String descripcionEfecto) {
+        this.descripcionEfecto = descripcionEfecto;
     }
 
     public dto.CartaTarotDTO toDTO() {
@@ -191,6 +232,12 @@ public class CartaTarot {
             case 25: // K de Espadas: cambio arma aleatorio
                 carta = new CartaTarot(nombre, EFECTO_NEGATIVO, 0f, "cambio-arma", true);
                 break;
+        }
+
+        if (carta != null) {
+            String codigo = (indice < 13) ? ((indice + 1) + "h") : ((indice - 13 + 1) + "s");
+            carta.setCodigoImagen(codigo);
+            carta.setDescripcionEfecto(efecto_txt);
         }
 
         return carta;

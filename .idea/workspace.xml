@@ -5,15 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f7f0374f-8e44-43a9-b24e-cc81bf0a1e43" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/compile.bat" beforeDir="false" afterPath="$PROJECT_DIR$/compile.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/progreso.dat" beforeDir="false" afterPath="$PROJECT_DIR$/progreso.dat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/DataBase/BaseDeDatos.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/DataBase/RankingService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/config/DefaultSettings.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dto/ArmaDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dto/CartaTarotDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dto/EnemigoDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dto/PartidaDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dto/PersonajeDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dto/PlayerDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/entity/Arma.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/entity/Botiquin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/entity/Collidable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/entity/Damageable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/entity/Jefe.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/entity/Personaje.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/entity/Proyectil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/entity/TipoArma.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/logic/Chronometer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/visual/Camera.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/visual/RankingRenderer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CAMBIOS_IMPLEMENTADOS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Game.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/entity/CartaTarot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/CartaTarot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/Enemigo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/Enemigo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/GameObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/GameObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/ID.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/ID.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/Moneda.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/Moneda.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/entity/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/logic/Chronometer.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/logic/Progreso.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/Progreso.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/visual/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/visual/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/visual/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/visual/Handler.java" afterDir="false" />
@@ -24,35 +40,14 @@
       <change beforePath="$PROJECT_DIR$/target/classes/dto/PartidaDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto/PartidaDTO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/dto/PersonajeDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto/PersonajeDTO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/dto/PlayerDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto/PlayerDTO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/Arma$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Arma$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/Arma.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Arma.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/Botiquin.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Botiquin.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/entity/CartaTarot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/CartaTarot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/Collidable.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Collidable.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/Damageable.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Damageable.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/Enemigo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Enemigo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/GameObject.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/GameObject.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/ID.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/ID.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/Jefe$Segmento.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Jefe$Segmento.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/Jefe.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Jefe.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/entity/Moneda.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Moneda.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/Personaje.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Personaje.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/entity/Player$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Player$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/entity/Player.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Player.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/Proyectil.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/Proyectil.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/entity/TipoArma.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/entity/TipoArma.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/logic/Chronometer.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/logic/Progreso.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/logic/Progreso.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/lombok/AccessLevel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/lombok/Getter$AnyAnnotation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/lombok/Getter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/lombok/Setter$AnyAnnotation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/lombok/Setter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/visual/Camera.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Camera.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/visual/Game$EstadoJuego.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Game$EstadoJuego.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/visual/Game.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Game.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/visual/Handler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Handler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/visual/RankingRenderer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/RankingRenderer.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/visual/Window$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Window$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/visual/Window$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Window$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/visual/Window$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/visual/Window$3.class" afterDir="false" />
@@ -111,7 +106,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "develop",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.jshint": "true",
@@ -133,8 +128,10 @@
       </method>
     </configuration>
     <configuration name="Game" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="26" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="visual.Game" />
-      <module name="Shuffling-The-Life" />
+      <module name="shuffling-the-life" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="visual.*" />

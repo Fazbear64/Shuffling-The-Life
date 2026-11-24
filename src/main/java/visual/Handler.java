@@ -107,13 +107,13 @@ public class Handler {
                 }
             }
 
-            // Colisiones de Botiquín <-> Jugador (Recuperación de vida)
+            // Colisiones de Botiquín <-> Jugador (Recolección al inventario)
             if (tempObject instanceof Botiquin && player != null) {
                 Botiquin botiquin = (Botiquin) tempObject;
                 if (player.getBounds().intersects(botiquin.getBounds())) {
-                    player.setVidaActual(player.getVidaMax()); // Recuperar toda la vida
+                    player.agregarBotiquin();
                     object.remove(botiquin);
-                    System.out.println("¡Botiquín usado! Vida completa recuperada.");
+                    System.out.println("¡Botiquín recogido y guardado en inventario! Botiquines disponibles: " + player.getBotiquines() + " [Presiona B para usar]");
                 }
             }
 
@@ -175,7 +175,8 @@ public class Handler {
             }
         }
 
-        object.removeIf(obj -> (obj instanceof Enemigo && ((Enemigo) obj).debeEliminar()) ||
+        object.removeIf(obj -> (obj instanceof Jefe && ((Jefe) obj).estaMuerto()) ||
+                               (obj instanceof Enemigo && ((Enemigo) obj).debeEliminar()) ||
                                (obj instanceof Proyectil && (
                                    ((Proyectil) obj).estaExpirado() ||
                                    obj.getX() < 0 || obj.getX() > config.DefaultSettings.worldWidth ||

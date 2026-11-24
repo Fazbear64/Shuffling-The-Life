@@ -41,12 +41,20 @@ public class Game extends Canvas implements Runnable {
 
     private int rondaActual = 1;
     private int tiradasTragaperras = 0;
+    private int tiendasVisitadasEnPartida = 0;
     private long maxTiempoSobrevividoMs = 0;
     private long partidaStartTime = 0;
+    private long tiempoPausadoMs = 0;  // Tiempo acumulado pausado en tiendas
 
     private static final long DURACION_OLEADA_MS = 60_000L;
-    private long oleadaStartTime;
+    private long oleadaStartTime = 0;
     private long ultimoSpawnEnemigo = 0;
+
+    // Constantes de selección de personaje
+    public static final int SEL_ANCHO_PERSONAJE = 160;
+    public static final int SEL_ALTO_PERSONAJE = 220;
+    public static final int SEL_ESPACIO_ENTRE = 30;
+    public static final int SEL_POS_Y = 140;
 
     // Comodines dinámicos de poker
     private CartaTarot[] comodinesActuales = new CartaTarot[6];
@@ -95,9 +103,22 @@ public class Game extends Canvas implements Runnable {
     private static final long DURACION_CINEMÁTICA_MS = 2500;
     private VideoPlayer videoPlayer;
 
+    // Fonts personalizadas
+    private Font gameFont;
+    private Font titleFont;
+    private Font hudFont;
+
     public Game() {
         handler = new Handler();
         camera = new Camera(0, 0);
+
+        // Cargar fonts personalizadas desde resources/fonts/
+        this.gameFont = FontLoader.loadFont("MiFont.otf", 20);
+        this.titleFont = FontLoader.loadFont("MiFont.otf", 48);
+        this.hudFont = FontLoader.loadFont("MiFont.otf", 14);
+
+        // Listar fonts disponibles (debug)
+        FontLoader.listAvailableFonts();
 
         // Verificar si la cinemática ya fue mostrada
         if (progreso.isCinematicaMostrada()) {
@@ -191,8 +212,12 @@ public class Game extends Canvas implements Runnable {
             }
 
             // Hacer que el jefe siga al jugador
-            if (jefe != null && !jefe.estaMuerto()) {
-                jefe.setTarget(player.getX() + 16, player.getY() + 16);
+            if (jefe != null) {
+                if (!jefe.estaMuerto()) {
+                    jefe.setTarget(player.getX() + 16, player.getY() + 16);
+                } else {
+                    jefe = null;
+                }
             }
         }
 
@@ -332,29 +357,35 @@ public class Game extends Canvas implements Runnable {
             // Restaurar cámara
             g2d.translate(camera.getX(), camera.getY());
 
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 16));
-            g.drawString("Ronda: " + rondaActual, 20, 30);
+            // HUD Limpio: Solo RONDA y Tiempo Vivo
+            // RONDA - Arriba, grande, centrado, rojo
+            g.setColor(Color.RED);
+            g.setFont(titleFont);
+            String roundText = "RONDA " + rondaActual;
+            int roundWidth = g.getFontMetrics().stringWidth(roundText);
+            g.drawString(roundText, DefaultSettings.screenWidth / 2 - roundWidth / 2, 60);
 
-            long tiempoTranscurridoMs = System.currentTimeMillis() - oleadaStartTime;
+            // Tiempo vivo - Abajo izquierda, pequeño
+            long tiempoTranscurridoMs = System.currentTimeMillis() - partidaStartTime;
             long segundosSobrevividos = tiempoTranscurridoMs / 1000;
-            g.drawString("Tiempo oleada: " + segundosSobrevividos + "s / 60s", 20, 55);
-            g.drawString("Record Vivo: " + (maxTiempoSobrevividoMs / 1000) + "s", 20, 80);
+            long minutos = segundosSobrevividos / 60;
+            long segundos = segundosSobrevividos % 60;
 
-            Player p = handler.getPlayer();
-            if (p != null) {
-                g.drawString("Vida: " + p.getVidaActual() + " / " + p.getVidaMax(), 20, 105);
-                g.drawString("Monedas: " + p.getMonedas(), 20, 130);
-                Arma arma = p.getArmaEquipada();
-                if (arma != null) {
-                    g.drawString("Arma: " + arma.getNombre() + " (Daño: " + p.calcularDañoParaArma(arma) + ")", 20, 155);
+            g.setColor(Color.WHITE);
+            g.setFont(hudFont);
+            g.drawString(String.format("%02d:%02d", minutos, segundos), 20, DefaultSettings.screenHeight - 20);
+
+            // Inventario de botiquines
+            Player playerHUD = handler.getPlayer();
+            if (playerHUD != null) {
+                int cantBotiquines = playerHUD.getBotiquines();
+                if (cantBotiquines > 0) {
+                    g.setColor(Color.MAGENTA);
+                    g.drawString("♥ Botiquines: " + cantBotiquines + " [B]", 90, DefaultSettings.screenHeight - 20);
+                } else {
+                    g.setColor(Color.GRAY);
+                    g.drawString("♥ Botiquines: 0", 90, DefaultSettings.screenHeight - 20);
                 }
-            }
-
-            RankingService.Snapshot rk = ranking.getSnapshot();
-            if (rk.estado == RankingService.Estado.LISTO && rk.mejorPersonal > 0
-                    && nombreJugadorActual().equals(rk.jugador)) {
-                g.drawString("Récord en línea: " + rk.mejorPersonal + "s", 20, 180);
             }
         }
 
@@ -370,10 +401,10 @@ public class Game extends Canvas implements Runnable {
         g.fillRect(0, 0, DefaultSettings.screenWidth, DefaultSettings.screenHeight);
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 48));
+        g.setFont(titleFont);
         g.drawString("🎬 SHUFFLING THE LIFE 🎬", centerX - 300, centerY - 100);
 
-        g.setFont(new Font("Arial", Font.PLAIN, 32));
+        g.setFont(gameFont);
         g.drawString("Reproduciendo cinemática...", centerX - 200, centerY);
 
         // Animación de puntos
@@ -381,7 +412,7 @@ public class Game extends Canvas implements Runnable {
         int puntos = (int) ((tiempoTranscurrido / 500) % 4);
         String textoPuntos = ".".repeat(puntos);
 
-        g.setFont(new Font("Arial", Font.PLAIN, 24));
+        g.setFont(gameFont);
         g.drawString("Por favor espera" + textoPuntos, centerX - 150, centerY + 80);
 
         // Cambiar a ENTRADA_NOMBRE después de 8 segundos (tiempo aproximado del video)
@@ -394,7 +425,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     private void actualizarEstadoJuego() {
-        if (estadoActual == EstadoJuego.JUGANDO) {
+        if (estadoActual == EstadoJuego.JUGANDO && oleadaStartTime > 0) {
             if (System.currentTimeMillis() - oleadaStartTime >= DURACION_OLEADA_MS) {
                 completarOleada();
             }
@@ -442,6 +473,7 @@ public class Game extends Canvas implements Runnable {
         ruletaGirada = false;
         armaObtenidaTragaperras = null;
         tieneBotiquinTragaperras = false;
+        tiempoPausadoMs = System.currentTimeMillis();  // Pausar tiempo
         estadoActual = EstadoJuego.TRAGAPERAS;
     }
 
@@ -484,14 +516,16 @@ public class Game extends Canvas implements Runnable {
         comodinesComprados = new boolean[6];
         cartaTarotActual = null;
         debeSpawnearJefe = true;
+        tiempoPausadoMs = System.currentTimeMillis();  // Pausar tiempo
 
         // Generar costos FIJOS para esta tienda
         for (int i = 0; i < 6; i++) {
             costoComodines[i] = 70 + (i * 5);
         }
 
-        // Desbloquear personaje según tiendas visitadas
-        int tiendaActual = tiradasTragaperras / 3; // Cada tienda es cada 3 oleadas
+        // Desbloquear personaje según tiendas visitadas en esta partida
+        tiendasVisitadasEnPartida++;
+        int tiendaActual = tiendasVisitadasEnPartida;
         progreso.desbloquearPorTienda(tiendaActual);
         System.out.println("Tienda " + tiendaActual + " visitada. Personajes desbloqueados: " + progreso.getPersonajesDesbloqueados());
 
@@ -524,6 +558,7 @@ public class Game extends Canvas implements Runnable {
 
     private void abrirTiendaTarot() {
         cartasTarotActuales = CartaTarot.generarOpcionesAleatorias();
+        tiempoPausadoMs = System.currentTimeMillis();  // Pausar tiempo
         estadoActual = EstadoJuego.TIENDA_TAROT;
     }
 
@@ -548,14 +583,23 @@ public class Game extends Canvas implements Runnable {
         // RESETEAR el estado de click sostenido al volver al juego
         clickPulsado = false;
 
+        // Reanudar tiempo: agregar el tiempo pausado al partidaStartTime
+        if (tiempoPausadoMs > 0) {
+            long tiempoPausaTotal = System.currentTimeMillis() - tiempoPausadoMs;
+            partidaStartTime += tiempoPausaTotal;
+            tiempoPausadoMs = 0;
+        }
+
         // Si venimos de tienda tarot, spawneamos el jefe
         if (debeSpawnearJefe) {
             spawnearJefe();
             debeSpawnearJefe = false;
         }
 
+        long ahora = System.currentTimeMillis();
+        oleadaStartTime = ahora;
+        ultimoSpawnEnemigo = ahora;
         estadoActual = EstadoJuego.JUGANDO;
-        oleadaStartTime = System.currentTimeMillis();
         this.requestFocus();
         this.requestFocusInWindow();
     }
@@ -648,11 +692,16 @@ public class Game extends Canvas implements Runnable {
         } else if (estadoActual == EstadoJuego.JUGANDO) {
             Player player = handler.getPlayer();
             if (player != null) {
-                // B para usar botiquín (recuperar vida completa)
+                // B para usar botiquín del inventario (recuperar vida completa)
                 if (keyCode == KeyEvent.VK_B) {
-                    if (player.getVidaActual() < player.getVidaMax()) {
-                        player.setVidaActual(player.getVidaMax());
-                        System.out.println("¡Botiquín usado! Vida completa recuperada.");
+                    if (player.getBotiquines() <= 0) {
+                        System.out.println("No tienes botiquines en el inventario.");
+                    } else if (player.getVidaActual() >= player.getVidaMax()) {
+                        System.out.println("Tu vida ya está al máximo.");
+                    } else {
+                        if (player.usarBotiquin()) {
+                            System.out.println("¡Botiquín usado! Vida completa recuperada. Te quedan: " + player.getBotiquines());
+                        }
                     }
                 }
             }
@@ -737,13 +786,28 @@ public class Game extends Canvas implements Runnable {
         // Resetear variables de juego
         rondaActual = 1;
         tiradasTragaperras = 0;
+        tiendasVisitadasEnPartida = 0;
         comodinesUsados.clear();
         comodinesComprados = new boolean[6];
         cartaTarotActual = null;
         armaObtenidaTragaperras = null;
         puedeRepetirTragaperras = true;
+        ruletaGirada = false;
+        botiquinTragaperras = null;
+        tieneBotiquinTragaperras = false;
+        clickPulsado = false;
+        jefe = null;
+        jefeSpawneado = false;
+        debeSpawnearJefe = false;
+        tiempoPausadoMs = 0;
+        tiempoAplicacionTarot = 0;
+        cartasTarotActuales = null;
+        comodinesActuales = new CartaTarot[6];
+        costoComodines = new int[6];
         maxTiempoSobrevividoMs = 0;
         partidaStartTime = 0;
+        oleadaStartTime = 0;
+        ultimoSpawnEnemigo = 0;
 
         // IMPORTANTE: Resetear personaje para permitir nueva selección
         personajeSeleccionado = null;
@@ -758,10 +822,10 @@ public class Game extends Canvas implements Runnable {
 
     private void renderEntradaNombre(Graphics g) {
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 36));
+        g.setFont(titleFont);
         g.drawString("BIENVENIDO A SHUFFLING THE LIFE", DefaultSettings.screenWidth/2 - 320, 100);
 
-        g.setFont(new Font("Arial", Font.BOLD, 24));
+        g.setFont(gameFont);
         g.drawString("¿Cuál es tu nombre?", DefaultSettings.screenWidth/2 - 140, 180);
 
         // Caja de entrada
@@ -773,13 +837,13 @@ public class Game extends Canvas implements Runnable {
         g2d.drawRect(DefaultSettings.screenWidth/2 - 200, 220, 400, 60);
 
         // Texto ingresado
-        g.setFont(new Font("Arial", Font.PLAIN, 28));
+        g.setFont(gameFont);
         g.setColor(Color.YELLOW);
         String textoMostrado = nombreEntrando.isEmpty() ? "Escribe tu nombre..." : nombreEntrando;
         g.drawString(textoMostrado, DefaultSettings.screenWidth/2 - 190, 265);
 
         // Instrucciones
-        g.setFont(new Font("Arial", Font.PLAIN, 16));
+        g.setFont(hudFont);
         g.setColor(Color.LIGHT_GRAY);
         g.drawString("Presiona [ENTER] para confirmar", DefaultSettings.screenWidth/2 - 160, 350);
         g.drawString("(Tu nombre será guardado en tu perfil)", DefaultSettings.screenWidth/2 - 190, 380);
@@ -822,7 +886,7 @@ public class Game extends Canvas implements Runnable {
         g2d.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
 
         g.setColor(new Color(255, 100, 200)); // Color cirquense/llamativo
-        g.setFont(new Font("Arial", Font.BOLD, 48));
+        g.setFont(titleFont);
         String titulo = "Shuffling-The-Life";
         int tituloWidth = g.getFontMetrics().stringWidth(titulo);
         g.drawString(titulo, DefaultSettings.screenWidth/2 - tituloWidth/2, 80);
@@ -830,21 +894,9 @@ public class Game extends Canvas implements Runnable {
         // Cargar imágenes de personajes
         CharacterImageLoader.cargarTodos();
 
-        // Posiciones de los personajes en fila - CENTRADOS
-        int anchoPersonaje = 160;
-        int altoPersonaje = 220;
-        int espacioEntre = 30;
-        int anchoTotal = (4 * anchoPersonaje) + (3 * espacioEntre);
-        int inicioPosX = (DefaultSettings.screenWidth - anchoTotal) / 2;
-
-        int[] posicionesX = new int[4];
-        for (int i = 0; i < 4; i++) {
-            posicionesX[i] = inicioPosX + (i * (anchoPersonaje + espacioEntre));
-        }
-        int posY = 140;
-
         // Dibujar personajes
         for (int i = 0; i < 4; i++) {
+            java.awt.Rectangle rect = getRectanglePersonaje(i);
             String personaje = CharacterImageLoader.getPersonajePorIndice(i);
             boolean desbloqueado = estaPersonajeDesbloqueado(personaje);
 
@@ -855,55 +907,55 @@ public class Game extends Canvas implements Runnable {
                 // DESBLOQUEADO: imagen normal con marco blanco
                 g.setColor(Color.WHITE);
                 g2d.setStroke(new java.awt.BasicStroke(3));
-                g2d.drawRect(posicionesX[i], posY, anchoPersonaje, altoPersonaje);
+                g2d.drawRect(rect.x, rect.y, rect.width, rect.height);
 
-                g.drawImage(img, posicionesX[i], posY, anchoPersonaje, altoPersonaje, null);
+                g.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
             } else if (img != null) {
                 // BLOQUEADO: silueta oscura
                 g.setColor(new Color(30, 30, 30, 200)); // Gris muy oscuro semitransparente
-                g.fillRect(posicionesX[i], posY, anchoPersonaje, altoPersonaje);
+                g.fillRect(rect.x, rect.y, rect.width, rect.height);
 
                 // Marco gris oscuro
                 g.setColor(Color.DARK_GRAY);
                 g2d.setStroke(new java.awt.BasicStroke(2));
-                g2d.drawRect(posicionesX[i], posY, anchoPersonaje, altoPersonaje);
+                g2d.drawRect(rect.x, rect.y, rect.width, rect.height);
 
                 // Dibujar imagen con mucha opacidad reducida para silueta
                 g2d.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.3f));
-                g.drawImage(img, posicionesX[i], posY, anchoPersonaje, altoPersonaje, null);
+                g.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
                 g2d.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1.0f));
             } else {
                 // Fallback: color de fondo
                 g.setColor(new Color(50, 50, 50));
-                g.fillRect(posicionesX[i], posY, anchoPersonaje, altoPersonaje);
+                g.fillRect(rect.x, rect.y, rect.width, rect.height);
 
                 g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.PLAIN, 12));
+                g.setFont(hudFont);
                 String nombre = getNombrePersonajeCapitalizado(personaje);
                 int nombreWidth = g.getFontMetrics().stringWidth(nombre);
-                g.drawString(nombre, posicionesX[i] + (anchoPersonaje - nombreWidth)/2, posY + altoPersonaje/2);
+                g.drawString(nombre, rect.x + (rect.width - nombreWidth)/2, rect.y + rect.height/2);
             }
 
             // Texto debajo del personaje (nombre)
             g.setColor(desbloqueado ? Color.GREEN : Color.GRAY);
-            g.setFont(new Font("Arial", Font.BOLD, 14));
+            g.setFont(gameFont);
             String nombre = getNombrePersonajeCapitalizado(personaje);
             int nombreWidth = g.getFontMetrics().stringWidth(nombre);
-            g.drawString(nombre, posicionesX[i] + (anchoPersonaje - nombreWidth)/2, posY + altoPersonaje + 25);
+            g.drawString(nombre, rect.x + (rect.width - nombreWidth)/2, rect.y + rect.height + 25);
 
             // Texto de bloqueo si está bloqueado
             if (!desbloqueado) {
                 g.setColor(Color.RED);
-                g.setFont(new Font("Arial", Font.PLAIN, 10));
+                g.setFont(hudFont);
                 String bloqueado = "[BLOQUEADO]";
                 int bloqueadoWidth = g.getFontMetrics().stringWidth(bloqueado);
-                g.drawString(bloqueado, posicionesX[i] + (anchoPersonaje - bloqueadoWidth)/2, posY + altoPersonaje + 45);
+                g.drawString(bloqueado, rect.x + (rect.width - bloqueadoWidth)/2, rect.y + rect.height + 45);
             }
         }
 
         // Texto "Selecciona el personaje..." debajo
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.PLAIN, 18));
+        g.setFont(gameFont);
         String instruccion = "Haz click en el personaje o presiona [1-4]";
         int instruccionWidth = g.getFontMetrics().stringWidth(instruccion);
         g.drawString(instruccion, DefaultSettings.screenWidth/2 - instruccionWidth/2, 450);
@@ -933,13 +985,11 @@ public class Game extends Canvas implements Runnable {
     /**
      * Obtener rectangulo de un personaje en la pantalla de selección
      */
-    private java.awt.Rectangle getRectanglePersonaje(int indice) {
-        int[] posicionesX = {100, 310, 520, 730};
-        int anchoPersonaje = 180;
-        int altoPersonaje = 240;
-        int posY = 150;
-
-        return new java.awt.Rectangle(posicionesX[indice], posY, anchoPersonaje, altoPersonaje);
+    public static java.awt.Rectangle getRectanglePersonaje(int indice) {
+        int anchoTotal = (4 * SEL_ANCHO_PERSONAJE) + (3 * SEL_ESPACIO_ENTRE);
+        int inicioPosX = (DefaultSettings.screenWidth - anchoTotal) / 2;
+        int posX = inicioPosX + (indice * (SEL_ANCHO_PERSONAJE + SEL_ESPACIO_ENTRE));
+        return new java.awt.Rectangle(posX, SEL_POS_Y, SEL_ANCHO_PERSONAJE, SEL_ALTO_PERSONAJE);
     }
 
     private void renderTragaperras(Graphics g) {
@@ -947,13 +997,13 @@ public class Game extends Canvas implements Runnable {
         g.fillRect(0, 0, DefaultSettings.screenWidth, DefaultSettings.screenHeight);
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 28));
+        g.setFont(gameFont);
         g.drawString("🎰 MÁQUINA TRAGAPERRAS 🎰", DefaultSettings.screenWidth / 2 - 210, 75);
 
         Player player = handler.getPlayer();
         int monedasActuales = player != null ? player.getMonedas() : 0;
 
-        g.setFont(new Font("Arial", Font.BOLD, 16));
+        g.setFont(gameFont);
         g.setColor(Color.YELLOW);
         g.drawString("Monedas: " + monedasActuales, DefaultSettings.screenWidth / 2 - 50, 105);
 
@@ -969,52 +1019,52 @@ public class Game extends Canvas implements Runnable {
         g.drawRect(boxX - 2, boxY - 2, boxW + 4, boxH + 4);
 
         if (!ruletaGirada) {
-            g.setFont(new Font("Arial", Font.BOLD, 22));
+            g.setFont(gameFont);
             g.setColor(Color.YELLOW);
             g.drawString("🎰 RULETA LISTA PARA GIRAR 🎰", boxX + 85, boxY + 70);
 
             g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.PLAIN, 16));
+            g.setFont(gameFont);
             g.drawString("Premios: Botiquín, Armas Nuevas o Nada", boxX + 115, boxY + 120);
 
             g.setColor(Color.CYAN);
-            g.setFont(new Font("Arial", Font.BOLD, 18));
+            g.setFont(gameFont);
             g.drawString("Presiona [ESPACIO] o [ENTER] para GIRAR", boxX + 85, boxY + 185);
         } else {
-            g.setFont(new Font("Arial", Font.BOLD, 17));
+            g.setFont(gameFont);
             g.setColor(Color.YELLOW);
             g.drawString("¡LA RULETA SE HA DETENIDO!", boxX + 150, boxY + 40);
 
             // CASO 1: BOTIQUÍN (sin arma)
             if (tieneBotiquinTragaperras && armaObtenidaTragaperras == null) {
                 g.setColor(Color.MAGENTA);
-                g.setFont(new Font("Arial", Font.BOLD, 32));
+                g.setFont(titleFont);
                 String botiquinTxt = "★ BOTIQUÍN ★";
                 int strW = g.getFontMetrics().stringWidth(botiquinTxt);
                 g.drawString(botiquinTxt, DefaultSettings.screenWidth / 2 - strW / 2, boxY + 100);
 
                 g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.PLAIN, 16));
-                g.drawString("¡Vida completa recuperada al recogerlo!", boxX + 130, boxY + 145);
+                g.setFont(gameFont);
+                g.drawString("¡Recógelo para guardarlo en tu inventario [B]!", boxX + 90, boxY + 145);
 
                 g.setColor(Color.LIGHT_GRAY);
-                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                g.setFont(hudFont);
                 g.drawString("Tu arma actual se mantiene sin cambios", boxX + 140, boxY + 175);
 
             // CASO 2: NADA (sigues con tu arma actual)
             } else if (!tieneBotiquinTragaperras && armaObtenidaTragaperras == null) {
                 g.setColor(Color.GRAY);
-                g.setFont(new Font("Arial", Font.BOLD, 32));
+                g.setFont(titleFont);
                 String nadaTxt = "¡NADA!";
                 int strW = g.getFontMetrics().stringWidth(nadaTxt);
                 g.drawString(nadaTxt, DefaultSettings.screenWidth / 2 - strW / 2, boxY + 100);
 
                 g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.PLAIN, 16));
+                g.setFont(gameFont);
                 g.drawString("La ruleta no te dio nada esta vez", boxX + 150, boxY + 145);
 
                 g.setColor(Color.CYAN);
-                g.setFont(new Font("Arial", Font.BOLD, 15));
+                g.setFont(gameFont);
                 String armaActual = (player != null && player.getArmaEquipada() != null)
                     ? player.getArmaEquipada().getNombre()
                     : "ninguna";
@@ -1034,16 +1084,16 @@ public class Game extends Canvas implements Runnable {
                 }
 
                 g.setColor(colArma);
-                g.setFont(new Font("Arial", Font.BOLD, 30));
+                g.setFont(titleFont);
                 String armaTxt = "★ " + armaObtenidaTragaperras.getNombre().toUpperCase() + " ★";
                 int strW = g.getFontMetrics().stringWidth(armaTxt);
                 g.drawString(armaTxt, DefaultSettings.screenWidth / 2 - strW / 2, boxY + 85);
 
                 g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.PLAIN, 15));
+                g.setFont(gameFont);
                 g.drawString(armaObtenidaTragaperras.getTipo().getDescripcion(), boxX + 35, boxY + 125);
 
-                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                g.setFont(hudFont);
                 g.setColor(Color.LIGHT_GRAY);
                 g.drawString("• Proyectiles: " + armaObtenidaTragaperras.getProyectilesPorDisparo() +
                              "  |  Cadencia: " + armaObtenidaTragaperras.getCooldownMs() + "ms" +
@@ -1056,71 +1106,186 @@ public class Game extends Canvas implements Runnable {
                              boxX + 35, boxY + 185);
 
                 g.setColor(Color.GREEN);
-                g.setFont(new Font("Arial", Font.BOLD, 15));
+                g.setFont(gameFont);
                 g.drawString("¡EQUIPADA AUTOMÁTICAMENTE AL JUGADOR!", boxX + 115, boxY + 225);
             }
 
             g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 16));
+            g.setFont(gameFont);
             g.drawString("Presiona [ESPACIO] o [ENTER] para volver al combate",
                          DefaultSettings.screenWidth / 2 - 240, boxY + boxH + 60);
 
             g.setColor(Color.YELLOW);
-            g.setFont(new Font("Arial", Font.BOLD, 14));
+            g.setFont(gameFont);
             g.drawString("[R] Repetir tirada (10 monedas)",
                          DefaultSettings.screenWidth / 2 - 160, boxY + boxH + 85);
         }
     }
 
-    private void renderTiendaNormal(Graphics g) {
-        g.setColor(Color.CYAN);
-        g.setFont(new Font("Arial", Font.BOLD, 26));
-        g.drawString("TIENDA DE COMODINES POKER", DefaultSettings.screenWidth/2 - 180, 48);
+    // Constantes de diseño para la Tienda de Fortune (Comodines)
+    public static final int TIENDA_CARD_ANCHO = 130;
+    public static final int TIENDA_CARD_ALTO = 184;
+    public static final int TIENDA_ESPACIO_X = 55;
+    public static final int TIENDA_ESPACIO_Y = 46;
+    public static final int TIENDA_INICIO_Y = 118;
 
+    public static java.awt.Rectangle getRectangleCartaTienda(int indice) {
+        int col = indice % 3;
+        int fila = indice / 3;
+        int anchoTotal = (3 * TIENDA_CARD_ANCHO) + (2 * TIENDA_ESPACIO_X);
+        int inicioX = (DefaultSettings.screenWidth - anchoTotal) / 2;
+        int x = inicioX + col * (TIENDA_CARD_ANCHO + TIENDA_ESPACIO_X);
+        int y = TIENDA_INICIO_Y + fila * (TIENDA_CARD_ALTO + TIENDA_ESPACIO_Y);
+        return new java.awt.Rectangle(x, y, TIENDA_CARD_ANCHO, TIENDA_CARD_ALTO);
+    }
+
+    private void renderTiendaNormal(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Fondo oscuro temático
+        g.setColor(new Color(12, 14, 22));
+        g.fillRect(0, 0, DefaultSettings.screenWidth, DefaultSettings.screenHeight);
+
+        // Título "TIENDA DE FORTUNE"
+        g.setColor(new Color(255, 215, 0)); // Dorado
+        g.setFont(titleFont);
+        String titulo = "TIENDA DE FORTUNE";
+        int tituloWidth = g.getFontMetrics().stringWidth(titulo);
+        g.drawString(titulo, DefaultSettings.screenWidth / 2 - tituloWidth / 2, 48);
+
+        // Subtítulo "Seleccione un comodín"
+        g.setColor(Color.WHITE);
+        g.setFont(gameFont);
+        String subtitulo = "Seleccione un comodín";
+        int subWidth = g.getFontMetrics().stringWidth(subtitulo);
+        g.drawString(subtitulo, DefaultSettings.screenWidth / 2 - subWidth / 2, 74);
+
+        // Monedas disponibles en la esquina superior derecha
         Player player = handler.getPlayer();
         int monedasActuales = player != null ? player.getMonedas() : 0;
+        g.setColor(Color.YELLOW);
+        g.setFont(gameFont);
+        String txtMonedas = "Monedas: " + monedasActuales + " 🪙";
+        g.drawString(txtMonedas, DefaultSettings.screenWidth - g.getFontMetrics().stringWidth(txtMonedas) - 30, 48);
 
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 16));
-        g.drawString("Monedas: " + monedasActuales, DefaultSettings.screenWidth/2 - 50, 75);
-        g.setFont(new Font("Arial", Font.PLAIN, 14));
-        g.drawString("Elige un comodin (1-6) para comprarlo. [ENTER] para continuar.", 60, 102);
-
-        int startY = 135;
-        int lineH = 34;
+        // Renderizar las 6 cartas en cuadrícula 2 filas x 3 columnas
         for (int i = 0; i < 6; i++) {
             if (comodinesActuales[i] == null) continue;
 
-            boolean comprado = comodinesComprados[i];
+            java.awt.Rectangle rect = getRectangleCartaTienda(i);
             CartaTarot comodin = comodinesActuales[i];
+            boolean comprado = comodinesComprados[i];
             int costo = costoComodines[i];
             boolean puedePagar = player != null && player.getMonedas() >= costo;
+
+            java.awt.image.BufferedImage img = CardImageLoader.obtenerImagen(comodin.getCodigoImagen());
+
+            if (comprado) {
+                // Ya comprado: tono grisáceo con transparencia
+                if (img != null) {
+                    g2d.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.25f));
+                    g.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
+                    g2d.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1.0f));
+                } else {
+                    g.setColor(new Color(35, 35, 35));
+                    g.fillRoundRect(rect.x, rect.y, rect.width, rect.height, 10, 10);
+                }
+                g.setColor(Color.DARK_GRAY);
+                g2d.setStroke(new java.awt.BasicStroke(2));
+                g2d.drawRoundRect(rect.x, rect.y, rect.width, rect.height, 10, 10);
+
+                // Texto COMPRADO sobre la carta
+                g.setColor(Color.LIGHT_GRAY);
+                g.setFont(gameFont);
+                String strComp = "COMPRADO";
+                int compW = g.getFontMetrics().stringWidth(strComp);
+                g.drawString(strComp, rect.x + (rect.width - compW) / 2, rect.y + rect.height / 2);
+
+            } else if (!puedePagar) {
+                // NO ALCANZA EL DINERO: se muestra en gris (silueta / desaturado como personajes bloqueados)
+                g.setColor(new Color(25, 25, 30, 210));
+                g.fillRoundRect(rect.x, rect.y, rect.width, rect.height, 10, 10);
+
+                if (img != null) {
+                    g2d.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.35f));
+                    g.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
+                    g2d.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 1.0f));
+                }
+
+                // Marco gris/rojo oscuro
+                g.setColor(new Color(110, 50, 50));
+                g2d.setStroke(new java.awt.BasicStroke(2));
+                g2d.drawRoundRect(rect.x, rect.y, rect.width, rect.height, 10, 10);
+
+                // Costo en rojo indicando que falta oro
+                g.setFont(hudFont);
+                g.setColor(new Color(230, 90, 90));
+                String tagCosto = costo + " monedas [Bloqueado]";
+                int tagW = g.getFontMetrics().stringWidth(tagCosto);
+                g.drawString(tagCosto, rect.x + (rect.width - tagW) / 2, rect.y + rect.height / 2);
+
+            } else {
+                // PUEDE COMPRAR (DISPONIBLE): Imagen nítida con marco dorado brillante
+                if (img != null) {
+                    g.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
+                } else {
+                    g.setColor(new Color(40, 48, 65));
+                    g.fillRoundRect(rect.x, rect.y, rect.width, rect.height, 10, 10);
+                }
+
+                // Marco dorado iluminado
+                g.setColor(new Color(255, 215, 0));
+                g2d.setStroke(new java.awt.BasicStroke(2.5f));
+                g2d.drawRoundRect(rect.x, rect.y, rect.width, rect.height, 10, 10);
+
+                // Badge de número (1-6) y costo arriba
+                g.setColor(new Color(0, 0, 0, 180));
+                g.fillRoundRect(rect.x + 4, rect.y + 4, 38, 20, 6, 6);
+                g.setColor(Color.WHITE);
+                g.setFont(hudFont);
+                g.drawString("[" + (i + 1) + "]", rect.x + 8, rect.y + 18);
+            }
+
+            // TEXTO DEBAJO DE LA CARTA: Solo lo que te da (ej: "20% más de vida") y el costo
+            String descEfecto = comodin.getDescripcionEfecto();
+            g.setFont(hudFont);
 
             if (comprado) {
                 g.setColor(Color.GRAY);
             } else if (puedePagar) {
-                g.setColor(Color.YELLOW);
+                g.setColor(new Color(140, 255, 140)); // Verde claro
             } else {
-                g.setColor(new Color(180, 80, 80));
+                g.setColor(new Color(160, 160, 160)); // Gris
             }
 
-            String estado = comprado ? " [COMPRADO]" : " (" + costo + " monedas)";
-            g.drawString((i + 1) + ". " + comodin.getNombre() + " - " + comodin.getTipoEfecto() + estado,
-                         60, startY + i * lineH);
+            int descW = g.getFontMetrics().stringWidth(descEfecto);
+            g.drawString(descEfecto, rect.x + (rect.width - descW) / 2, rect.y + rect.height + 17);
+
+            // Costo debajo de la descripción
+            if (!comprado) {
+                g.setColor(puedePagar ? Color.YELLOW : Color.RED);
+                String txtCosto = costo + " monedas";
+                int costW = g.getFontMetrics().stringWidth(txtCosto);
+                g.drawString(txtCosto, rect.x + (rect.width - costW) / 2, rect.y + rect.height + 31);
+            }
         }
 
+        // Barra inferior: Teclas de control y botón para continuar
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.PLAIN, 13));
-        g.drawString("[ENTER/ESPACIO] Pasar a cartas de Tarot ->", 60, startY + 6 * lineH + 15);
+        g.setFont(hudFont);
+        String instrucciones = "Haz click en la carta o presiona [1-6] para comprar  |  [ENTER/ESPACIO] Continuar hacia el Tarot ->";
+        int instW = g.getFontMetrics().stringWidth(instrucciones);
+        g.drawString(instrucciones, DefaultSettings.screenWidth / 2 - instW / 2, DefaultSettings.screenHeight - 16);
     }
 
     private void renderTiendaTarot(Graphics g) {
         g.setColor(new Color(180, 100, 255));
-        g.setFont(new Font("Arial", Font.BOLD, 26));
+        g.setFont(gameFont);
         g.drawString("SELECCION DE CARTA TAROT", DefaultSettings.screenWidth/2 - 180, 80);
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.PLAIN, 15));
+        g.setFont(gameFont);
         g.drawString("Presiona 1, 2 o 3 para elegir carta. ¡OBLIGATORIO!", DefaultSettings.screenWidth/2 - 240, 115);
 
         if (cartasTarotActuales == null) {
@@ -1138,9 +1303,9 @@ public class Game extends Canvas implements Runnable {
             else if ("negativo".equals(tipo)) g.setColor(coloresTipo[1]);
             else g.setColor(coloresTipo[2]);
 
-            g.setFont(new Font("Arial", Font.BOLD, 15));
+            g.setFont(gameFont);
             g.drawString((i + 1) + ". " + carta.getNombre(), 80, startY + i * lineH);
-            g.setFont(new Font("Arial", Font.PLAIN, 13));
+            g.setFont(hudFont);
             g.setColor(Color.LIGHT_GRAY);
             g.drawString("   Efecto: " + carta.getEfecto() + "  |  " + carta.getTipoEfecto()
                          + "  |  " + String.format("%.0f%%", Math.abs(carta.getValor()) * 100),
@@ -1150,11 +1315,11 @@ public class Game extends Canvas implements Runnable {
 
     private void renderGameOver(Graphics g) {
         g.setColor(Color.RED);
-        g.setFont(new Font("Arial", Font.BOLD, 36));
+        g.setFont(titleFont);
         g.drawString("HAS MUERTO - GAME OVER!", DefaultSettings.screenWidth/2 - 210, 150);
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 24));
+        g.setFont(gameFont);
         String nombreJugador = nombreIngresado ? nombreEntrando : progreso.getNombreJugador();
         g.drawString(nombreJugador, DefaultSettings.screenWidth/2 - (g.getFontMetrics().stringWidth(nombreJugador) / 2), 200);
 
@@ -1175,25 +1340,49 @@ public class Game extends Canvas implements Runnable {
         g.drawString(recordTexto, DefaultSettings.screenWidth/2 - (g.getFontMetrics().stringWidth(recordTexto) / 2), 240);
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.PLAIN, 16));
+        g.setFont(gameFont);
         g.drawString("Presiona [R] o [ENTER] para Reintentar", DefaultSettings.screenWidth/2 - 160, 300);
 
         RankingRenderer.dibujar(g, ranking.getSnapshot(), nombreJugadorActual(), DefaultSettings.screenWidth / 2, 350);
     }
 
     /**
+     * Manejar clicks en la tienda de comodines (Fortune)
+     */
+    public void manejarClickTiendaNormal(int mouseX, int mouseY) {
+        Player player = handler.getPlayer();
+
+        for (int i = 0; i < 6; i++) {
+            java.awt.Rectangle rect = getRectangleCartaTienda(i);
+            // Incluir el área de la carta y el texto de abajo
+            java.awt.Rectangle clickArea = new java.awt.Rectangle(rect.x, rect.y, rect.width, rect.height + 35);
+
+            if (clickArea.contains(mouseX, mouseY)) {
+                if (!comodinesComprados[i] && player != null && comodinesActuales[i] != null) {
+                    CartaTarot comodin = comodinesActuales[i];
+                    int costo = costoComodines[i];
+
+                    if (player.gastarMonedas(costo)) {
+                        comodinesComprados[i] = true;
+                        aplicarComodin(player, comodin);
+                        System.out.println("[TIENDA FORTUNE] Comprado: " + comodin.getNombre() + " (" + comodin.getDescripcionEfecto() + ")");
+                    } else {
+                        System.out.println("[TIENDA FORTUNE] Monedas insuficientes para: " + comodin.getNombre() + " (Tienes: " + player.getMonedas() + ", Necesitas: " + costo + ")");
+                    }
+                } else if (comodinesComprados[i]) {
+                    System.out.println("[TIENDA FORTUNE] Ya compraste este comodín.");
+                }
+                return;
+            }
+        }
+    }
+
+    /**
      * Manejar clicks en la pantalla de selección de personaje
      */
     public void manejarClickSeleccionPersonaje(int mouseX, int mouseY) {
-        // Posiciones de los personajes
-        int[] posicionesX = {100, 310, 520, 730};
-        int anchoPersonaje = 180;
-        int altoPersonaje = 240;
-        int posY = 150;
-
-        // Verificar click en cada personaje
         for (int i = 0; i < 4; i++) {
-            java.awt.Rectangle rect = new java.awt.Rectangle(posicionesX[i], posY, anchoPersonaje, altoPersonaje);
+            java.awt.Rectangle rect = getRectanglePersonaje(i);
 
             if (rect.contains(mouseX, mouseY)) {
                 String personaje = CharacterImageLoader.getPersonajePorIndice(i);
@@ -1214,30 +1403,52 @@ public class Game extends Canvas implements Runnable {
     }
 
     public void setPersonajeSeleccionado(Personaje personaje) {
+        if (personaje == null) return;
+
         this.personajeSeleccionado = personaje;
-        this.estadoActual = EstadoJuego.JUGANDO;
         this.rondaActual = 1;
         this.tiradasTragaperras = 0;
+        this.tiendasVisitadasEnPartida = 0;
         this.comodinesUsados.clear();
         this.comodinesComprados = new boolean[6];
         this.cartaTarotActual = null;
         this.armaObtenidaTragaperras = null;
         this.puedeRepetirTragaperras = true;
-        this.partidaStartTime = System.currentTimeMillis();
+        this.ruletaGirada = false;
+        this.botiquinTragaperras = null;
+        this.tieneBotiquinTragaperras = false;
+        this.clickPulsado = false;
+        this.jefe = null;
+        this.jefeSpawneado = false;
+        this.debeSpawnearJefe = false;
+        this.tiempoPausadoMs = 0;
+        this.tiempoAplicacionTarot = 0;
+        this.cartasTarotActuales = null;
+        this.comodinesActuales = new CartaTarot[6];
+        this.costoComodines = new int[6];
+        this.maxTiempoSobrevividoMs = 0;
 
-        if (personajeSeleccionado != null) {
-            handler.limpiarTodo();
-            Player player = new Player(
-                DefaultSettings.worldWidth / 2,
-                DefaultSettings.worldHeight / 2,
-                ID.PLAYER,
-                personajeSeleccionado
-            );
-            player.equiparArma(Arma.crearRevolver());
-            handler.addObject(player);
+        handler.limpiarTodo();
+        Player player = new Player(
+            DefaultSettings.worldWidth / 2,
+            DefaultSettings.worldHeight / 2,
+            ID.PLAYER,
+            personajeSeleccionado
+        );
+        player.equiparArma(Arma.crearRevolver());
+        handler.addObject(player);
+
+        if (camera != null) {
+            camera.tick(player);
         }
 
-        oleadaStartTime = System.currentTimeMillis();
+        long ahora = System.currentTimeMillis();
+        this.partidaStartTime = ahora;
+        this.oleadaStartTime = ahora;
+        this.ultimoSpawnEnemigo = ahora;
+
+        // Establecer estado JUGANDO solo cuando todo esté completamente preparado
+        this.estadoActual = EstadoJuego.JUGANDO;
     }
 
     public Personaje getPersonaSeleccionado() { return personajeSeleccionado; }
@@ -1276,3 +1487,4 @@ public class Game extends Canvas implements Runnable {
         new Game();
     }
 }
+

@@ -68,11 +68,11 @@ public class Progreso {
     public void desbloquearPorTienda(int numTiendas) {
         if (numTiendas < 0) return;
 
-        this.tiendaVisitadas = numTiendas;
+        this.tiendaVisitadas = Math.max(this.tiendaVisitadas, numTiendas);
 
-        if (numTiendas >= 1) gatoDesbloqueado = true;
-        if (numTiendas >= 2) ranaDesbloqueada = true;
-        if (numTiendas >= 3) colieDesbloqueado = true;
+        if (this.tiendaVisitadas >= 1) gatoDesbloqueado = true;
+        if (this.tiendaVisitadas >= 2) ranaDesbloqueada = true;
+        if (this.tiendaVisitadas >= 3) colieDesbloqueado = true;
 
         guardar();
     }

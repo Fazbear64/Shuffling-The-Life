@@ -11,6 +11,7 @@ public class Player extends GameObject implements Damageable, Collidable {
     private int vidaActual = 100;
     private int dañoBase = 1;
     private int monedas = 0; // Monedas/Divisa recolectada
+    private int botiquines = 0; // Inventario de botiquines almacenados
 
     // Sistema de armas
     private Arma armaEquipada;
@@ -308,7 +309,9 @@ public class Player extends GameObject implements Damageable, Collidable {
     public PlayerDTO toDTO() {
         String nombre = personaje != null ? personaje.toString() : "Ninguno";
         dto.ArmaDTO armaDTO = armaEquipada != null ? armaEquipada.toDTO() : null;
-        return new PlayerDTO(x, y, vidaActual, vidaMax, dañoBase, velocidadMovimiento, monedas, nombre, armaDTO);
+        PlayerDTO dto = new PlayerDTO(x, y, vidaActual, vidaMax, dañoBase, velocidadMovimiento, monedas, nombre, armaDTO);
+        dto.setBotiquines(botiquines);
+        return dto;
     }
 
     public void actualizarDesdeDTO(PlayerDTO dto) {
@@ -320,9 +323,35 @@ public class Player extends GameObject implements Damageable, Collidable {
         this.dañoBase = dto.getDañoBase();
         this.velocidadMovimiento = Math.max(1, dto.getVelocidadMovimiento());
         this.monedas = dto.getMonedas();
+        this.botiquines = dto.getBotiquines();
         if (dto.getArma() != null) {
             this.armaEquipada = Arma.fromDTO(dto.getArma());
         }
+    }
+
+    public int getBotiquines() {
+        return botiquines;
+    }
+
+    public void setBotiquines(int botiquines) {
+        this.botiquines = Math.max(0, botiquines);
+    }
+
+    public void agregarBotiquin() {
+        this.botiquines++;
+    }
+
+    /**
+     * Consume un botiquín del inventario y cura toda la vida del jugador.
+     * @return true si se usó con éxito, false si no tenía botiquines o ya tenía la vida completa.
+     */
+    public boolean usarBotiquin() {
+        if (this.botiquines > 0 && this.vidaActual < this.vidaMax) {
+            this.vidaActual = this.vidaMax;
+            this.botiquines--;
+            return true;
+        }
+        return false;
     }
 
     public int getVida() {

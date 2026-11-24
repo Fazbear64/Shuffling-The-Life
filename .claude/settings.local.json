@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn clean *)",
+      "PowerShell(cd C:\\\\Users\\\\USUARIO\\\\Documents\\\\GitHub\\\\Shuffling-The-Life; Write-Host \"Ubicación del archivo de progreso:\" -ForegroundColor Cyan; Write-Host \"$\\(Get-Location\\)\\\\progreso.dat\" -ForegroundColor Yellow; Write-Host \"\"; if \\(Test-Path \"progreso.dat\"\\) { Write-Host \"✅ El archivo existe actualmente\" -ForegroundColor Green; Write-Host \"Tamaño: $\\(\\(Get-Item progreso.dat\\).Length\\) bytes\" } else { Write-Host \"❌ El archivo NO existe \\(se creará al jugar\\)\" -ForegroundColor Red })",
+      "Bash(git show *)",
+      "Read(//tmp/**)",
+      "Bash(javac *)",
+      "Bash(javap -cp target/classes visual.Game)",
+      "Bash(java *)",
+      "Bash(mvn *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(cd 'C:\\\\Users\\\\USUARIO\\\\Documents\\\\GitHub\\\\Shuffling-The-Life'; Get-ChildItem -Path '.' -Directory | Where-Object { $_.Name -match 'target|out|\\\\.idea' } | Select-Object Name)",
+      "PowerShell($mvnPath = 'C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA 2026.2.2\\\\plugins\\\\maven-plugin\\\\lib\\\\maven3\\\\bin\\\\mvn.cmd'; cd 'C:\\\\Users\\\\USUARIO\\\\Documents\\\\GitHub\\\\Shuffling-The-Life'; & $mvnPath clean compile 2>&1)",
+      "PowerShell($mvnPath = 'C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA 2026.2.2\\\\plugins\\\\maven-plugin\\\\lib\\\\maven3\\\\bin\\\\mvn.cmd'; cd 'C:\\\\Users\\\\USUARIO\\\\Documents\\\\GitHub\\\\Shuffling-The-Life'; & $mvnPath clean compile -e 2>&1 | Select-Object -Last 100)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(Tee-Object *)",
+      "PowerShell($mvnPath = 'C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA 2026.2.2\\\\plugins\\\\maven-plugin\\\\lib\\\\maven3\\\\bin\\\\mvn.cmd'; cd 'C:\\\\Users\\\\USUARIO\\\\Documents\\\\GitHub\\\\Shuffling-The-Life'; & $mvnPath clean compile 2>&1 | Select-Object -Last 20)",
+      "PowerShell($mvnPath = 'C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA 2026.2.2\\\\plugins\\\\maven-plugin\\\\lib\\\\maven3\\\\bin\\\\mvn.cmd'; cd 'C:\\\\Users\\\\USUARIO\\\\Documents\\\\GitHub\\\\Shuffling-The-Life'; & $mvnPath clean compile 2>&1 | Select-Object -Last 25)",
+      "PowerShell($mvnPath = 'C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA 2026.2.2\\\\plugins\\\\maven-plugin\\\\lib\\\\maven3\\\\bin\\\\mvn.cmd'; cd 'C:\\\\Users\\\\USUARIO\\\\Documents\\\\GitHub\\\\Shuffling-The-Life'; & $mvnPath clean compile 2>&1 | Select-Object -Last 15)",
+      "PowerShell($mvnPath = 'C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA 2026.2.2\\\\plugins\\\\maven-plugin\\\\lib\\\\maven3\\\\bin\\\\mvn.cmd'; cd 'C:\\\\Users\\\\USUARIO\\\\Documents\\\\GitHub\\\\Shuffling-The-Life'; & $mvnPath clean package -DskipTests 2>&1 | Select-Object -Last 30)",
+      "PowerShell($mvnPath = 'C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA 2026.2.2\\\\plugins\\\\maven-plugin\\\\lib\\\\maven3\\\\bin\\\\mvn.cmd'; cd 'C:\\\\Users\\\\USUARIO\\\\Documents\\\\GitHub\\\\Shuffling-The-Life'; & $mvnPath clean package -DskipTests 2>&1 | Select-Object -Last 15)",
+      "PowerShell(.\\\\compile.bat)",
+      "Bash(git diff *)"
+    ]
+  }
+}

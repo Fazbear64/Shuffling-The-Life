@@ -41,6 +41,12 @@ public class Window {
                     return;
                 }
 
+                // Detección de clicks en tienda de comodines (Fortune)
+                if (game.getEstadoActual() == Game.EstadoJuego.TIENDA_NORMAL) {
+                    game.manejarClickTiendaNormal(e.getX(), e.getY());
+                    return;
+                }
+
                 if (game.getEstadoActual() == Game.EstadoJuego.JUGANDO) {
                     Camera cam = game.getCamera();
                     if (cam != null) {
@@ -104,7 +110,7 @@ public class Window {
                     return;
                 }
 
-                if (game.getPersonaSeleccionado() == null) {
+                if (game.getEstadoActual() == Game.EstadoJuego.SELECCION_PERSONAJE) {
                     // Pantalla de selección de personaje
                     if (key == KeyEvent.VK_1) {
                         game.setPersonajeSeleccionado(Personaje.crearPersonaje(Personaje.PERSONAJE_MAPACHE));
@@ -126,12 +132,15 @@ public class Window {
                     return;
                 }
 
-                Player player = game.getPlayer();
-                if (player != null) {
-                    if (key == KeyEvent.VK_W || key == KeyEvent.VK_UP) player.setMovingUp(true);
-                    if (key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) player.setMovingDown(true);
-                    if (key == KeyEvent.VK_A || key == KeyEvent.VK_LEFT) player.setMovingLeft(true);
-                    if (key == KeyEvent.VK_D || key == KeyEvent.VK_RIGHT) player.setMovingRight(true);
+                if (game.getEstadoActual() == Game.EstadoJuego.JUGANDO) {
+                    game.manejarTeclaEspecial(key);
+                    Player player = game.getPlayer();
+                    if (player != null) {
+                        if (key == KeyEvent.VK_W || key == KeyEvent.VK_UP) player.setMovingUp(true);
+                        if (key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) player.setMovingDown(true);
+                        if (key == KeyEvent.VK_A || key == KeyEvent.VK_LEFT) player.setMovingLeft(true);
+                        if (key == KeyEvent.VK_D || key == KeyEvent.VK_RIGHT) player.setMovingRight(true);
+                    }
                 }
             }
 
